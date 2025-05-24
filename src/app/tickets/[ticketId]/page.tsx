@@ -1,4 +1,8 @@
+import Link from 'next/link';
+import { Placeholder } from '@/components/placeholder';
+import { Button } from '@/components/ui/button';
 import { initialTickets } from '@/data';
+import { ticketsPath } from '@/paths';
 
 type TicketPageProps = {
   params: Promise<{
@@ -12,7 +16,18 @@ const TicketPage = async ({ params }: TicketPageProps) => {
   const ticket = initialTickets.find(ticket => ticket.id === ticketId);
 
   if (!ticket) {
-    return <div>Ticket not found</div>;
+    return (
+      <div className="flex flex-1">
+        <Placeholder
+          label="Ticket not found"
+          button={
+            <Button variant="outline" asChild>
+              <Link href={ticketsPath()}>Go to tickets</Link>
+            </Button>
+          }
+        />
+      </div>
+    );
   }
 
   return (
