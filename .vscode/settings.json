@@ -10,5 +10,8 @@
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "prettier.requireConfig": true,
   "prettier.useEditorConfig": true,
-  "explorer.compactFolders": false
+  "explorer.compactFolders": false,
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  }
 }
