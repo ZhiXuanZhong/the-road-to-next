@@ -1,10 +1,18 @@
-import { initialTickets } from '@/data';
-import { Ticket } from '@/features/ticket/types';
+import { prisma } from '@/lib/prisma';
 
-export const getTickets = async (): Promise<Ticket[]> => {
-  await new Promise(resolve => setTimeout(resolve, 2000));
-
-  return new Promise(resolve => {
-    resolve(initialTickets);
+export const getTickets = async () => {
+  return await prisma.ticket.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
   });
 };
+
+/*
+ * 開發學習紀錄:
+ *
+ * == 2025-05-29 ==
+ * - 使用 getMany() 取得所有資料
+ *
+ * ===
+ */

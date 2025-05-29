@@ -1,13 +1,14 @@
+import type { Ticket } from '@prisma/client';
 import clsx from 'clsx';
 import { LucideSquareArrowOutUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TICKET_ICONS } from '@/features/ticket/constants';
-import { Ticket } from '@/features/ticket/types';
 import { ticketPath } from '@/paths';
 
 type TicketItemProps = {
+  // [筆記點D] 延伸 Typed APIs 的做法
   ticket: Ticket;
   isDetail?: boolean;
 };
@@ -93,8 +94,19 @@ export { TicketItem };
  * - [筆記點C] 使用 clsx 的實作
  *   1. 使用 clsx 可以讓我們更方便的控制元素的 class 屬性
  *     - 第一個參數是 class 屬性，第二個參數是條件 object
-
  *
+ * == 2025-05-29 ==
+ * - [筆記點D] 延伸 Typed APIs 的做法
+ *   - 前端的資料結構實務上未必都會直接映射到資料庫對應的型別，在中小型的 app 使用 prisma 的型別定義會比較務實方便
+ *   - 當 app 持續擴張的狀況下，就可能會對 DB 回來的資料進行加工，如計算、加入欄位等。這時就會有以 API 回傳結果自訂型別的需求
+ *     - 缺點：增加維護的難度(定義型別的規則開始有差異)
+ *     - 實作：這邊的 Ticket 的型別如果以 API 的結果而不直接使用 prisma 的型別定義
+ *       - type TicketItemProps = {
+ *         ticket:
+ *           | Awaited<ReturnType<typeof getTickets>>[number]
+ *           | Awaited<ReturnType<typeof getTicket>>;
+ *         isDetail?: boolean;
+ *       };
  *
  * ===
  */
