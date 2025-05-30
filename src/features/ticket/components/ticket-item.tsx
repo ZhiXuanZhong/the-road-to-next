@@ -1,9 +1,10 @@
 import type { Ticket } from '@prisma/client';
 import clsx from 'clsx';
-import { LucideSquareArrowOutUpRight } from 'lucide-react';
+import { LucideSquareArrowOutUpRight, LucideTrash } from 'lucide-react';
 import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { deleteTicket } from '@/features/ticket/action/delete-ticket';
 import { TICKET_ICONS } from '@/features/ticket/constants';
 import { ticketPath } from '@/paths';
 
@@ -22,6 +23,25 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
     >
       <LucideSquareArrowOutUpRight className="w-4 h-4" />
     </Link>
+  );
+
+  // const handleDeleteTicket = async () => {
+  //   await deleteTicket(ticket.id);
+  // };
+
+  // const deleteButton = (
+  //   <Button variant="outline" size="icon" onClick={handleDeleteTicket}>
+  //     <LucideTrash className="w-4 h-4" />
+  //   </Button>
+  // );
+
+  // [筆記點E]
+  const deleteButton = (
+    <form action={deleteTicket.bind(null, ticket.id)}>
+      <Button variant="outline" size="icon">
+        <LucideTrash className="w-4 h-4" />
+      </Button>
+    </form>
   );
 
   return (
@@ -51,9 +71,8 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
           </span>
         </CardContent>
       </Card>
-
       {/* 筆記點B */}
-      {isDetail ? null : <div className="flex flex-col gap-y-1">{detailButton}</div>}
+      <div className="flex flex-col gap-y-1">{isDetail ? deleteButton : detailButton}</div>
     </div>
   );
 };
@@ -107,6 +126,46 @@ export { TicketItem };
  *           | Awaited<ReturnType<typeof getTicket>>;
  *         isDetail?: boolean;
  *       };
+ *
+ * == 2025-05-29 ==
+ * - [筆記點E] 關於 Server Action 的實作
+ *   1. 兩種實作方式比較：
+ *     a. 傳統 async function 方式：
+ *        - 以 Client component 實作，使用 'use client' 就可以使用 onClick 事件處理
+ *        - 優點簡單易懂，缺點是最大化使用 Server component 的優勢
+ *        - 範例：
+ *          ```typescript
+ *          const handleDeleteTicket = async () => {
+ *            await deleteTicket(ticket.id);
+ *          };
+ *
+ *          const deleteButton = (
+ *            <Button
+ *              variant="outline"
+ *              size="icon"
+ *              onClick={handleDeleteTicket}
+ *            >
+ *              <LucideTrash className="w-4 h-4" />
+ *            </Button>
+ *          );
+ *          ```
+ *
+ *     b. Server Action 綁定方式：
+ *        - 直接使用 form 的 action 屬性
+ *        - 利用 bind 方法預先傳遞參數，讓操作盡可能的在 Server 端執行
+ *        - 優點：最大化 Server component 的優勢，在資料處理盡可能提前於 Client 端進行，但缺點是需要使用 form 標籤，這種實作方式與傳統 React 的元件設計模式略有不同
+ *        - 範例：
+ *          ```typescript
+ *          const deleteButton = (
+ *            <form action={deleteTicket.bind(null, ticket.id)}>
+ *              <Button variant="outline" size="icon">
+ *                <LucideTrash className="w-4 h-4" />
+ *              </Button>
+ *            </form>
+ *          );
+ *          ```
+ *
+ *
  *
  * ===
  */
