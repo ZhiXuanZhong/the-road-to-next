@@ -18,6 +18,8 @@ const TicketItem = ({ ticket, isDetail }: TicketItemProps) => {
   const detailButton = (
     // [筆記點B]
     <Link
+      // [筆記點F] 關於 prefetch 的實作
+      prefetch
       href={ticketPath(ticket.id)}
       className={buttonVariants({ variant: 'outline', size: 'icon' })}
     >
@@ -165,7 +167,10 @@ export { TicketItem };
  *          );
  *          ```
  *
- *
+ * == 2025-06-04 ==
+ * - [筆記點F] 關於 prefetch 的實作
+ *   - prefetch Cache 也是 Client-Side Cache，兩者都屬於 Router Cache 的範疇(Soft Cache)
+ *   - 在 Link 元件中使用 prefetch 屬性，讓元素進入 Viewport 時就載入目標頁面，這對用戶體驗是好的，但可能造成效能浪費，因為預先載入了用戶不需要的部分
  *
  * ===
  */
